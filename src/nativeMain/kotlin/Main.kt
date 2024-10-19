@@ -6,7 +6,7 @@ import com.github.ajalt.clikt.parameters.options.convert
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 
-class BoostToggle : CliktCommand() {
+class TurboBoostToggle : CliktCommand() {
     private val stateTransition: BoostState? by mutuallyExclusiveOptions(
         option("--enable", "-e").flag().convert { BoostState.ENABLED },
         option("--disable", "-d").flag().convert { BoostState.DISABLED },
@@ -34,4 +34,4 @@ class BoostToggle : CliktCommand() {
     }
 }
 
-fun main(args: Array<String>) = BoostToggle().main(args)
+fun main(args: Array<String>) = TurboBoostToggle().main(args)

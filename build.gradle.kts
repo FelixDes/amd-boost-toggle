@@ -14,7 +14,7 @@ kotlin {
     val isArm64 = System.getProperty("os.arch") == "aarch64"
     val nativeTarget = when {
         hostOs == "Linux" && !isArm64 -> linuxX64("native")
-        else -> throw GradleException("Target on Linux")
+        else -> throw GradleException("Targets on Linux only")
     }
 
     nativeTarget.apply {
