@@ -1,26 +1,28 @@
+libxcrypt-compat
+
+
 # amd-boost-toggle
 
-Linux turboboost switch for AMD processors
-
-# ⚠ Attention ⚠
-
-This app is designed primarily for gaming laptops with AMD CPUs to reduce micro-freezes in games.
-However, it's not a perfect solution.
-Disabling boost across all cores can significantly impact performance, as most games are optimized to utilize a single
-CPU core.
-A __better approach is to use__ a more fine-tuned tool like __[RyzenAdj](https://github.com/FlyGoat/RyzenAdj)__ for
-managing CPU performance.
-But if you prefer a __quick solution without extra configuration__ and know the potential trade-offs, this tool could be
-just what you need.
+Linux turbo boost switch for AMD processors
 
 # ⬇ Installation
 
-__TBD__
+## 📦 By package manager
+
+TBD
+
+## ⚙ Manually
+
+Clone the repo, then run
+```shell
+./gradlew linkReleaseExecutableNative
+```
+After that you can take a binary from `build/bin/native/releaseExecutable`
 
 # 💻 Usage
 
 ```
-$ turbo-boost-toggle [<options>]
+$ amd-boost-toggle [<options>]
 
 Options:
   -e, --enable
@@ -37,3 +39,14 @@ If you want to improve the project follow the steps below:
 2. Create your branch from develop
 3. Create merge request to develop branch.
 4. Check that GitHub workflow completes
+
+# ⚠ Attention ⚠
+
+This app is designed primarily for gaming laptops with AMD CPUs to reduce micro-freezes in games.
+However, it's not a perfect solution.
+Disabling boost across all cores can significantly impact performance, as most games are optimized to utilize a single
+CPU core.
+A __better approach is to use__ a more fine-tuned tool like __[RyzenAdj](https://github.com/FlyGoat/RyzenAdj)__ for
+managing CPU performance.  
+But if you prefer a __quick solution without extra configuration__ and know the potential trade-offs, this tool could be
+just what you need.

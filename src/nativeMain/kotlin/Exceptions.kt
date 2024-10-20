@@ -1,6 +1,11 @@
-class FileNoAccessException(file: String) : RuntimeException("Cannot access file: $file")
-class FileNoPermissionException(file: String) : RuntimeException("No permission for file: $file")
-class FileNotFoundException(file: String) : RuntimeException("File not found: $file")
+abstract class UserException(msg: String) : RuntimeException(msg)
 
-class StateParsingException(state: String) : RuntimeException("State parsing error: $state")
-class StateAccessException : RuntimeException("Can not get state")
+class FileNoPermissionException(file: String) : UserException(
+    "${RED}No permission${RESET} for file: $file.\n${GREEN_BOLD_BRIGHT}Tip${RESET}: try to use this command with ${GREEN_BOLD_BRIGHT}sudo${RESET}"
+)
+class FileNotFoundException(file: String) : UserException("File not found: $file")
+class FileNoAccessException(file: String) : UserException("Cannot access file: $file")
+
+
+class StateParsingException(state: String) : UserException("State parsing error: $state")
+object StateAccessException : UserException("Can not get state")
