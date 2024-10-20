@@ -24,10 +24,4 @@ kotlin {
             }
         }
     }
-
-    sourceSets {
-        nativeMain.dependencies {
-            implementation(libs.clikt)
-        }
-    }
 }

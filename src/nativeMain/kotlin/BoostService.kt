@@ -3,7 +3,11 @@ import platform.posix.*
 
 @OptIn(ExperimentalForeignApi::class)
 object BoostService {
-    private const val boostFile = "/sys/devices/system/cpu/cpufreq/boost"
+    private const val BOOST_FILE = "/sys/devices/system/cpu/cpufreq/boost"
+
+    private val noPermissionEx = FileNoPermissionException(BOOST_FILE)
+    private val notFoundEx = FileNotFoundException(BOOST_FILE)
+    private val noAccessEx = FileNoAccessException(BOOST_FILE)
 
     fun enable() {
         write(BoostState.ENABLED)
@@ -15,13 +19,13 @@ object BoostService {
 
     fun getState(): BoostState {
         requireRead()
-        val fd = fopen(boostFile, "r")
+        val fd = fopen(BOOST_FILE, "r")
 
         try {
             memScoped {
-                val readBufferLength = 4
+                val readBufferLength = 2
                 val buffer = allocArray<ByteVar>(readBufferLength)
-                val res = fgets(buffer, readBufferLength, fd)?.toKString() ?: throw StateAccessException()
+                val res = fgets(buffer, readBufferLength, fd)?.toKString() ?: throw StateAccessException
                 return stateFromLinuxString(res)
             }
         } finally {
@@ -31,11 +35,11 @@ object BoostService {
 
     private fun write(state: BoostState) {
         requireWrite()
-        val fd = fopen(boostFile, "r+")
+        val fd = fopen(BOOST_FILE, "r+")
         try {
             memScoped {
                 val writeRes = fputs(state.toLinuxString(), fd)
-                if (writeRes == EOF) throw StateAccessException()
+                if (writeRes == EOF) throw StateAccessException
             }
         } finally {
             fclose(fd)
@@ -51,12 +55,12 @@ object BoostService {
     }
 
     private fun checkAccess(flag: Int) {
-        val res = access(boostFile, flag)
+        val res = access(BOOST_FILE, flag)
         if (res == -1) {
             when (errno) {
-                13 -> throw FileNoPermissionException(boostFile)
-                2 -> throw FileNotFoundException(boostFile)
-                else -> throw FileNoAccessException(boostFile)
+                EACCES -> throw noPermissionEx
+                2 -> throw notFoundEx
+                else -> throw noAccessEx
             }
         }
     }

@@ -1,37 +1,57 @@
-import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.core.Context
-import com.github.ajalt.clikt.core.main
-import com.github.ajalt.clikt.parameters.groups.mutuallyExclusiveOptions
-import com.github.ajalt.clikt.parameters.options.convert
-import com.github.ajalt.clikt.parameters.options.flag
-import com.github.ajalt.clikt.parameters.options.option
+import kotlin.system.exitProcess
 
-class TurboBoostToggle : CliktCommand() {
-    private val stateTransition: BoostState? by mutuallyExclusiveOptions(
-        option("--enable", "-e").flag().convert { BoostState.ENABLED },
-        option("--disable", "-d").flag().convert { BoostState.DISABLED },
+const val HELP_MESSAGE = """amd-boost-toggle [<options>]
+
+    Toggles turbo boost on AMD processors
+
+Options:
+  -e, --enable
+  -d, --disable
+  -o, --out      return state
+  -h, --help     Show this message and exit"""
+
+
+fun main(args: Array<String>) {
+    val mappings = mapOf(
+        "--out" to "-o",
+        "--help" to "-h",
+        "--enable" to "-e",
+        "--disable" to "-d",
     )
-    private val shouldPrint by option("--out", "-o", help = "return state").flag()
+    val exclusives: Set<String> = setOf("-e", "-d")
 
-    override fun help(context: Context): String {
-        return "Toggles turbo boost on AMD processors"
-    }
+    val preparedArgs: Set<String> = args
+        .map { mappings.getOrElse(it) { it } }
+        .toSet()
 
-    override fun run() {
-        try {
-            when (stateTransition) {
-                BoostState.ENABLED -> BoostService.enable()
-                BoostState.DISABLED -> BoostService.disable()
-                null -> {}
+    val unknownArgs = preparedArgs.subtract(mappings.values.toSet())
+    val res = when {
+        preparedArgs.contains("-h") or preparedArgs.isEmpty() -> HELP_MESSAGE to 1
+
+        unknownArgs.isNotEmpty() -> "Unknown arguments: $unknownArgs\nTry '--help' for more information" to 1
+
+        preparedArgs.containsAll(exclusives) -> "Exclusive arguments" to 1
+
+        else -> {
+            var willPrint = false
+
+            try {
+                preparedArgs.forEach {
+                    when (it) {
+                        "-o", "--out" -> willPrint = true
+                        "-e", "--enable" -> BoostService.enable()
+                        "-d", "--disable" -> BoostService.disable()
+                    }
+                }
+
+                if (willPrint)
+                    BoostService.getState() to 0
+                else "" to 0
+            } catch (e: UserException) {
+                e.message to 1
             }
-
-            if (shouldPrint) {
-                echo(BoostService.getState())
-            }
-        } catch (e: RuntimeException) {
-            echo(e.message)
         }
     }
+    println(res.first)
+    exitProcess(res.second)
 }
-
-fun main(args: Array<String>) = TurboBoostToggle().main(args)
