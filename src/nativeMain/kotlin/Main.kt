@@ -7,7 +7,7 @@ const val HELP_MESSAGE = """amd-boost-toggle [<options>]
 Options:
   -e, --enable
   -d, --disable
-  -o, --out      return state
+  -o, --out      return current boost state
   -h, --help     Show this message and exit"""
 
 
