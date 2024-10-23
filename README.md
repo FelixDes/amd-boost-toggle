@@ -1,23 +1,34 @@
-libxcrypt-compat
-
-
 # amd-boost-toggle
 
 Linux turbo boost switch for AMD processors
 
 # ⬇ Installation
 
-## 📦 By package manager
-
-TBD
-
 ## ⚙ Manually
 
-Clone the repo, then run
+Clone the repo and run
+
 ```shell
 ./gradlew linkReleaseExecutableNative
 ```
-After that you can take a binary from `build/bin/native/releaseExecutable`
+
+Then you can take binary file from [./build/bin/native/releaseExecutable](build/bin/native/releaseExecutable)
+
+> Unobvious point - you need `libcrypt` to build-up. It can be installed as `libxcrypt-compat`
+
+## 📦 By package manager
+
+### AUR-based (Arch Linux, Manjaro Linux, EndeavourOS, Garuda Linux, etc)
+
+```shell
+yay -S amd-boost-toggle-bin
+```
+
+or
+
+```shell
+yay -S amd-boost-toggle-git
+```
 
 # 💻 Usage
 
