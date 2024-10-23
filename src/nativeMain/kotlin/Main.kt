@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
         .toSet()
 
     val unknownArgs = preparedArgs.subtract(mappings.values.toSet())
-    val res = when {
+    val res: Pair<String?, Int> = when {
         preparedArgs.contains("-h") or preparedArgs.isEmpty() -> HELP_MESSAGE to 1
 
         unknownArgs.isNotEmpty() -> "Unknown arguments: $unknownArgs\nTry '--help' for more information" to 1
@@ -45,13 +45,16 @@ fun main(args: Array<String>) {
                 }
 
                 if (willPrint)
-                    BoostService.getState() to 0
-                else "" to 0
+                    BoostService.getState().toString() to 0
+                else null to 0
             } catch (e: UserException) {
                 e.message to 1
             }
         }
     }
-    println(res.first)
+    if (res.first != null) {
+        println(res.first)
+    }
     exitProcess(res.second)
 }
+
